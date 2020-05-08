@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>xs-backend</artifactId>
+        <groupId>xs.rfid</groupId>
+        <version>2.4</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>xs-device</artifactId>
+    <name>硬件调用模块</name>
+
+    <properties>
+        <configuration.version>1.9</configuration.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>xs.rfid</groupId>
+            <artifactId>xs-backend</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>xs.rfid</groupId>
+            <artifactId>xs-common</artifactId>
+            <version>2.4</version>
+        </dependency>
+
+<!--        &lt;!&ndash;模板引擎&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-freemarker</artifactId>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/commons-configuration/commons-configuration &ndash;&gt;-->
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>${configuration.version}</version>
+        </dependency>
+    </dependencies>
+</project>

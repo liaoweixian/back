@@ -1,0 +1,31 @@
+server:
+  port: 9525
+mqtt:
+#  host: tcp://47.98.228.109:1883
+  host: tcp://193.112.163.181:1883
+  username: xsmessage
+  password: xsmessage
+  group: master
+  deviceControl: /sense/server/deviceControl/#
+  readTagInfo: /sense/server/readTagInfo/#
+  sendRFIDInfo: /sense/client/rfid/data/
+  RFIDQueryStatus: /sense/client/deviceInfo/
+  deviceControlLight: /sense/server/deviceControl/
+  deviceControlLightResp: /sense/client/deviceControl/[deviceId]
+mqtt-local:
+  host: tcp://192.168.0.120:1883
+  username: sense
+  password: xs002003
+  group: master
+  SendRdInfo: /sense/client/Info/#
+  RFIDSetTaskRp: /SENSE/Server/Info/[Mac]
+#  RFIDLoadReport : /SENSE/Client/RFIDInfo/#
+  RFIDLoadReport : /sense/client/rfid/data/#
+  RFIDLoadReportRp : /SENSE/Server/RFIDInfo/[Mac]
+#  设备状态实时上报（60S）
+  DeviceStatus : /SENSE/Client/DeviceInfo/#
+  RFIDQueryStatusRp : /SENSE/Server/DeviceInfo/[Mac]
+#  TR90按键事件
+  RFIDKeyEvent: /sense/client/readTagInfo/#
+#  TR90控制结果返回主题
+  deviceControlLightResp: /sense/client/deviceControl/#

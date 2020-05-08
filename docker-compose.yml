@@ -1,0 +1,37 @@
+# 使用说明 V3.0.0
+# 1. 使用docker-compose  宿主机不需要配置host来发现
+# 2. 无需修改源码，根目录  docker-compose up 即可
+# 3. 静静等待服务启动
+
+version: '3'
+services:
+#  xs-mysql:
+#    build:
+#      context: ./
+#      dockerfile: ./db/Dockerfile
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 123456
+#    restart: always
+#    container_name: xs-mysql
+#    image: xs-mysql
+#    ports:
+#      - 3306:3306
+#    volumes:
+#      - ./xs-mysql:/var/lib/mysql
+#    command: --lower_case_table_names=1
+
+
+  xs-system:
+    build:
+      context: ./
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - 9526:9526
+    restart: always
+    image: xs-system
+    container_name: xs-system
+    network_mode: host
+
+
+
+

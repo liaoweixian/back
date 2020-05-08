@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds" debug="false">
+    <contextName>xs</contextName>
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <property name="log.charset" value="utf-8" />
+    <property name="log.pattern" value="%black(%contextName-) %red(%d{yyyy-MM-dd HH:mm:ss}) %green([%thread]) %highlight(%-5level) %boldMagenta(%logger{36}) - %gray(%msg%n)" />
+    <!-- 日志文件存储路径 -->
+<!--    <property name="LOG_HOME" value="C:\\xs_data\\backend\\logs" />-->
+    <property name="LOG_HOME" value="logs" />
+
+    <appender name="Info"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/info/info.log</file>
+        <append>true</append>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+
+        <!-- 每小时生成日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/info/my-log.%d{yyyy-MM-dd-HH}-info.log.gz
+            </fileNamePattern>
+            <!-- 日志文件保留15天 -->
+            <maxHistory>360</maxHistory>
+        </rollingPolicy>
+
+        <!-- 格式化输出 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger -
+                %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="Error"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/error/error.log</file>
+        <append>true</append>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/error/%d{yyyy-MM-dd-HH}-error.log.gz
+            </fileNamePattern>
+            <maxHistory>360</maxHistory>
+        </rollingPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger -
+                %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 异步日志配置 -->
+    <appender name="info_async" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>20</discardingThreshold>
+        <queueSize>2000</queueSize>
+        <appender-ref ref="Info" />
+    </appender>
+
+    <appender name="error_async" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>20</discardingThreshold>
+        <queueSize>2000</queueSize>
+        <appender-ref ref="Error" />
+    </appender>
+
+
+
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+            <charset>${log.charset}</charset>
+        </encoder>
+    </appender>
+
+    <!--普通日志输出到控制台-->
+<!--    <root level="info">-->
+<!--        <appender-ref ref="console" />-->
+<!--    </root>-->
+
+    <!--监控sql日志输出 -->
+    <logger name="jdbc.sqlonly" level="INFO" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+
+    <logger name="jdbc.resultset" level="ERROR" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+
+    <!--  如想看到表格数据，将OFF改为INFO  -->
+    <logger name="jdbc.resultsettable" level="OFF" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+
+    <logger name="jdbc.connection" level="OFF" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+
+    <logger name="jdbc.sqltiming" level="OFF" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+
+    <logger name="jdbc.audit" level="OFF" additivity="false">
+        <appender-ref ref="console" />
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="console" />
+        <appender-ref ref="info_async" />
+        <appender-ref ref="error_async" />
+    </root>
+
+</configuration>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xs.rfid.modules.stock.dao.RfidGiftMstDao">
+    <resultMap id="baseMap" type="xs.rfid.modules.stock.domain.RfidGiftMst">
+        <id property="id" column="id"/>
+        <result property="giftCod" column="gift_cod"/>
+        <result property="giftName" column="gift_name"/>
+        <result property="giftType" column="gift_type"/>
+        <result property="giftModel" column="gift_model"/>
+        <result property="toLocationCod" column="to_location_cod"/>
+        <result property="isUse" column="is_use"/>
+        <result property="rfidCod" column="rfid_cod"/>
+        <result property="registerDat" column="register_dat"/>
+        <result property="visitSta" column="visit_sta"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="inventoryCnt" column="inventory_cnt"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="baseMap" parameterType="xs.rfid.modules.stock.service.dto.RfidGiftMstQueryCriteria">
+        select gift.*, IFNULL(invm.inventory_cnt,0) as inventory_cnt
+        from rfid_gift_mst as gift
+        left join rfid_inv_mst as invm on gift.gift_cod = invm.gift_cod
+        <where>
+            <if test="criteria.giftCod != null and criteria.giftCod != ' '">
+                and gift.gift_cod = #{criteria.giftCod}
+            </if>
+            <if test="criteria.giftModel != null and criteria.giftModel != ' '">
+                and gift.gift_model = #{criteria.giftModel}
+            </if>
+            <if test="criteria.giftName != null and criteria.giftName != ' '">
+                and gift.gift_name = #{criteria.giftName}
+            </if>
+        </where>
+    </select>
+</mapper>
