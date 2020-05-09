@@ -31,8 +31,11 @@ import xs.rfid.modules.stock.domain.RfidGiftMst;
 import xs.rfid.modules.stock.service.RfidGiftMstService;
 import xs.rfid.modules.stock.service.dto.RfidGiftMstQueryCriteria;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -122,11 +125,29 @@ public class RfidGiftMstController {
 
     @Log("图片上传")
     @ApiOperation("图片上传")
-    // @PreAuthorize("@el.check('GiftMst:del')")
     @PostMapping("/put-file")
-    public ResponseEntity<Object> imgupload(@RequestBody MultipartFile file) {
-        RfidFile rfidFile = ossTemplate.putFile(file);
-        System.out.println(rfidFile);
-        return new ResponseEntity<>(rfidFile,HttpStatus.OK);
+    public ResponseEntity<Object> imgupload(@RequestBody MultipartFile file, HttpServletRequest request) {
+        if (file.isEmpty()) {
+            System.out.println("文件为空空");
+        }
+        // 文件名
+        String fileName = file.getOriginalFilename();
+        // 后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        // 上传后的路径
+        String filePath = "C://xs//file//";
+        // 新文件名
+        fileName = UUID.randomUUID() + suffixName;
+        File dest = new File(filePath + fileName);
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+        try {
+            file.transferTo(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String filename = request.getContextPath() + "/file/" + fileName;
+        return new ResponseEntity<>(filename,HttpStatus.OK);
     }
 }
