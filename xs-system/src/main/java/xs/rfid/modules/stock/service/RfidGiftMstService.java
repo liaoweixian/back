@@ -18,6 +18,7 @@ package xs.rfid.modules.stock.service;
 
 import org.springframework.data.domain.Pageable;
 import xs.rfid.modules.stock.domain.RfidGiftMst;
+import xs.rfid.modules.stock.domain.RfidGiftTrn;
 import xs.rfid.modules.stock.service.dto.RfidGiftMstDto;
 import xs.rfid.modules.stock.service.dto.RfidGiftMstQueryCriteria;
 
@@ -64,6 +65,8 @@ public interface RfidGiftMstService {
     * @return RfidGiftMstDto
     */
     RfidGiftMstDto create(RfidGiftMst resources);
+
+    void copy(Long id);
 
     /**
     * 编辑

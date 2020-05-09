@@ -96,6 +96,15 @@ public class RfidGiftMstController {
         return new ResponseEntity<>(rfidGiftMstService.create(resources),HttpStatus.CREATED);
     }
 
+    @GetMapping("/copy")
+    @Log("礼品复制")
+    @ApiOperation("礼品复制")
+    @PreAuthorize("@el.check('rfidGiftMst:add')")
+    public ResponseEntity<Object> copy(RfidGiftMstQueryCriteria criteria){
+        rfidGiftMstService.copy(Long.valueOf(criteria.getId()));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PutMapping
     @Log("修改礼品")
     @ApiOperation("修改礼品")

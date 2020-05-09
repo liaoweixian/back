@@ -28,4 +28,5 @@ import xs.rfid.modules.stock.domain.RfidGiftMst;
 public interface RfidGiftMstRepository extends JpaRepository<RfidGiftMst, Long>, JpaSpecificationExecutor<RfidGiftMst> {
 
     public RfidGiftMst findByGiftModel(String giftModel);
+
 }
