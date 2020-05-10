@@ -44,13 +44,15 @@ mybatis-plus:
     refresh: false
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     cache-enabled: false
   mapper-locations: classpath:mappers/*Dao.xml
 
+
 mqtt:
   host: tcp://47.98.228.109:1883
-  username: xsmessage
-  password: xsmessage
+  username: admin
+  password: public
   group: master
   xsDataTopc: /xs/server/data/#
 

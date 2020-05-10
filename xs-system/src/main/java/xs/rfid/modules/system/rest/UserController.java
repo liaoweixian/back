@@ -106,6 +106,19 @@ public class UserController {
         }
     }
 
+    /**
+     * 获取所有用户
+     * @param criteria
+     * @return
+     */
+    @Log("查询用户")
+    @ApiOperation("查询用户")
+    @GetMapping("/list")
+    // @PreAuthorize("@el.check('user:list')")
+    public ResponseEntity<Object> getUserList(UserQueryCriteria criteria){
+        return new ResponseEntity<>(userService.queryAll(criteria),HttpStatus.OK);
+    }
+
     @Log("新增用户")
     @ApiOperation("新增用户")
     @PostMapping

@@ -39,4 +39,6 @@ public class RfidGiftTrnQueryCriteria{
 
     private String giftName;
 
+    private String clientName;
+
 }

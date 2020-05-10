@@ -26,10 +26,12 @@ import org.springframework.data.domain.Pageable;
 import xs.rfid.modules.stock.dao.RfidGiftMstDao;
 import xs.rfid.modules.stock.domain.RfidGiftMst;
 import xs.rfid.modules.stock.domain.RfidInvMst;
+import xs.rfid.modules.stock.domain.RfidInvTrn;
 import xs.rfid.modules.stock.repository.RfidGiftMstRepository;
 import xs.rfid.modules.stock.repository.RfidInvMstRepository;
 import xs.rfid.modules.stock.service.RfidGiftMstService;
 import xs.rfid.modules.stock.service.RfidInvMstService;
+import xs.rfid.modules.stock.service.RfidInvTrnService;
 import xs.rfid.modules.stock.service.dto.RfidGiftMstDto;
 import xs.rfid.modules.stock.service.dto.RfidGiftMstQueryCriteria;
 import xs.rfid.modules.stock.service.dto.RfidInvMstDto;
@@ -63,13 +65,16 @@ public class RfidGiftMstServiceImpl implements RfidGiftMstService {
 
     private final RfidInvMstRepository rfidInvMstRepository;
 
-    public RfidGiftMstServiceImpl(RfidGiftMstRepository rfidGiftMstRepository, RfidGiftMstMapper rfidGiftMstMapper, RfidInvMstService rfidInvMstService, RfidInvMstMapper rfidInvMstMapper, RfidGiftMstDao rfidGiftMstDao, RfidInvMstRepository rfidInvMstRepository) {
+    private final RfidInvTrnService rfidInvTrnService;
+
+    public RfidGiftMstServiceImpl(RfidGiftMstRepository rfidGiftMstRepository, RfidGiftMstMapper rfidGiftMstMapper, RfidInvMstService rfidInvMstService, RfidInvMstMapper rfidInvMstMapper, RfidGiftMstDao rfidGiftMstDao, RfidInvMstRepository rfidInvMstRepository, RfidInvTrnService rfidInvTrnService) {
         this.rfidGiftMstRepository = rfidGiftMstRepository;
         this.rfidGiftMstMapper = rfidGiftMstMapper;
         this.rfidInvMstService = rfidInvMstService;
         this.rfidInvMstMapper = rfidInvMstMapper;
         this.rfidGiftMstDao = rfidGiftMstDao;
         this.rfidInvMstRepository = rfidInvMstRepository;
+        this.rfidInvTrnService = rfidInvTrnService;
     }
 
     @Override
@@ -94,8 +99,8 @@ public class RfidGiftMstServiceImpl implements RfidGiftMstService {
 
     @Override
     public RfidGiftMstDto findByGiftModel(String giftModel) {
-        RfidGiftMst byGiftModel = rfidGiftMstRepository.findByGiftModel(giftModel);
-        RfidGiftMstDto rfidGiftMstDto = rfidGiftMstMapper.toDto(byGiftModel);
+        List<RfidGiftMst> giftList = rfidGiftMstRepository.findByGiftModel(giftModel);
+        RfidGiftMstDto rfidGiftMstDto = rfidGiftMstMapper.toDto(giftList.get(0));
         return rfidGiftMstDto;
     }
 
@@ -104,6 +109,7 @@ public class RfidGiftMstServiceImpl implements RfidGiftMstService {
     public RfidGiftMstDto create(RfidGiftMst resources) {
         // @TODO 礼品编号
         resources.setGiftCod(NOUtils.nextItemNo("G"));
+        resources.setIsBind(0); //绑定默认值
         resources.setRegisterDat(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
         RfidGiftMst save = rfidGiftMstRepository.save(resources);
         this.createInvMst(save);
@@ -132,7 +138,9 @@ public class RfidGiftMstServiceImpl implements RfidGiftMstService {
     private RfidInvMstDto createInvMst(RfidGiftMst rfidGiftMst) {
         RfidInvMst giftWarehouse = rfidInvMstRepository.findByGiftCod(rfidGiftMst.getGiftCod());
         RfidInvMst stock = new RfidInvMst();
-        if (!Optional.ofNullable(giftWarehouse).isPresent()) {
+        // 没有库存
+        if (!Optional.ofNullable(giftWarehouse).isPresent())
+        {
             stock.setGiftCod(rfidGiftMst.getGiftCod());
             // 库存数量
             stock.setInventoryCnt("1");
@@ -142,11 +150,26 @@ public class RfidGiftMstServiceImpl implements RfidGiftMstService {
             stock.setLastChangeUserName(SecurityUtils.getUsername());
             // 0 有效
             stock.setIsDelete("0");
-        } else {
+        }
+        // 有库存
+        else
+            {
             int warhouseNum = Integer.parseInt(giftWarehouse.getInventoryCnt());
             giftWarehouse.setInventoryCnt(String.valueOf(++warhouseNum));
             stock = giftWarehouse;
         }
+
+        // 库存事务添加
+        RfidInvTrn rfidInvTrn = new RfidInvTrn();
+        rfidInvTrn.setGiftCod(stock.getGiftCod());
+        rfidInvTrn.setLocationCod(stock.getLocationCod());
+        rfidInvTrn.setTransCnt("1");
+        rfidInvTrn.setTransType("1"); // 入库
+        rfidInvTrn.setTransDat(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        rfidInvTrn.setStatus("1"); // 未上架
+        rfidInvTrn.setIsDelete("0");
+        rfidInvTrnService.create(rfidInvTrn);
+
         return rfidInvMstService.create(stock);
     }
 

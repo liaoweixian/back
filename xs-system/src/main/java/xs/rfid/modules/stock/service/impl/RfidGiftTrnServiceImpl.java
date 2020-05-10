@@ -4,9 +4,11 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import xs.rfid.modules.stock.dao.RfidGiftTrnDao;
 import xs.rfid.modules.stock.domain.*;
+import xs.rfid.modules.stock.repository.RfidGiftMstRepository;
 import xs.rfid.modules.stock.repository.RfidGiftTrnRepository;
 import xs.rfid.modules.stock.repository.RfidInvMstRepository;
 import xs.rfid.modules.stock.repository.RfidVdrMstRepository;
+import xs.rfid.modules.stock.service.RfidGiftMstService;
 import xs.rfid.modules.stock.service.RfidGiftTrnService;
 import xs.rfid.modules.stock.service.RfidInvTrnService;
 import xs.rfid.modules.stock.service.dto.RfidGiftTrnDto;
@@ -48,13 +50,16 @@ public class RfidGiftTrnServiceImpl implements RfidGiftTrnService {
 
     private final RfidVdrMstRepository rfidVdrMstRepository;
 
-    public RfidGiftTrnServiceImpl(RfidGiftTrnRepository rfidGiftTrnRepository, RfidGiftTrnMapper rfidGiftTrnMapper, RfidInvMstRepository rfidInvMstRepository, RfidInvTrnService rfidInvTrnService, RfidGiftTrnDao rfidGiftTrnDao, RfidVdrMstRepository rfidVdrMstRepository) {
+    private final RfidGiftMstRepository rfidGiftMstRepository;
+
+    public RfidGiftTrnServiceImpl(RfidGiftTrnRepository rfidGiftTrnRepository, RfidGiftTrnMapper rfidGiftTrnMapper, RfidInvMstRepository rfidInvMstRepository, RfidInvTrnService rfidInvTrnService, RfidGiftTrnDao rfidGiftTrnDao, RfidVdrMstRepository rfidVdrMstRepository, RfidGiftMstRepository rfidGiftMstRepository) {
         this.rfidGiftTrnRepository = rfidGiftTrnRepository;
         this.rfidGiftTrnMapper = rfidGiftTrnMapper;
         this.rfidInvMstRepository = rfidInvMstRepository;
         this.rfidInvTrnService = rfidInvTrnService;
         this.rfidGiftTrnDao = rfidGiftTrnDao;
         this.rfidVdrMstRepository = rfidVdrMstRepository;
+        this.rfidGiftMstRepository = rfidGiftMstRepository;
     }
 
     @Override
@@ -94,10 +99,18 @@ public class RfidGiftTrnServiceImpl implements RfidGiftTrnService {
         resources.setLocationCod(warehouse.getLocationCod());
         resources.setGiftCnt("1"); // 礼品数量
         resources.setStatus("1"); // 1、选择下单 2、已备货、3、已上架、4、已生产、5、已打印、6、已领取、7、返库
-        if (!Optional.ofNullable(resources.getId()).isPresent()) {
-            resources.setCreateName(SecurityUtils.getUsername());
-            resources.setCreateTime(DateUtil.format(date, "yyyy-MM-dd HH:mm:ss"));
-        }
+        resources.setCreateName(SecurityUtils.getUsername());
+        resources.setCreateTime(DateUtil.format(date, "yyyy-MM-dd HH:mm:ss"));
+
+        // 查询所有没有绑定订单的商品
+        List<RfidGiftMst> giftList =
+                rfidGiftMstRepository.findByGiftCodAndIsBindNot(warehouse.getGiftCod(), 1);
+        RfidGiftMst gift = giftList.get(0);
+        // 修改礼品状态为绑定
+        gift.setIsBind(1);
+        rfidGiftMstRepository.save(gift);
+        // 礼品绑定商品
+        resources.setGiftId(gift.getId());
 
         // 插入用户信息
         RfidVdrMst member = rfidVdrMstRepository.findByClientCod(resources.getClientCod());

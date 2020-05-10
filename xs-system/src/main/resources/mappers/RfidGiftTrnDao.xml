@@ -28,7 +28,17 @@
         giftMst.gift_cod as gift_cod,
         giftMst.img_url as img_url,
         giftMst.gift_name as gift_name
-         FROM rfid_gift_trn as giftTrn left join rfid_gift_mst as giftMst
-        on giftTrn.gift_cod = giftMst.gift_cod
+         FROM rfid_gift_trn as giftTrn left join rfid_gift_mst as giftMst on giftTrn.gift_id = giftMst.id
+        <where>
+            <if test="criteria.clientName != null and criteria.clientName != ''">
+                and giftTrn.client_name = #{criteria.clientName}
+            </if>
+            <if test="criteria.giftCod != null and criteria.giftCod != ''">
+                and giftTrn.gift_cod = #{criteria.giftCod}
+            </if>
+            <if test="criteria.status != null and criteria.status != ''">
+                and giftTrn.status = #{criteria.status}
+            </if>
+        </where>
     </select>
 </mapper>

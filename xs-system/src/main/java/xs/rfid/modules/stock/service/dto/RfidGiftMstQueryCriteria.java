@@ -74,4 +74,5 @@ public class RfidGiftMstQueryCriteria{
     /** 精确 */
     @Query
     private String isDelete;
+
 }

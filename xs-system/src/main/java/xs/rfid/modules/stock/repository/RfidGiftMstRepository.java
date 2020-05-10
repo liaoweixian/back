@@ -19,6 +19,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import xs.rfid.modules.stock.domain.RfidGiftMst;
 
+import java.util.List;
+
 /**
 * @website https://docs.auauz.net
 * @description /
@@ -27,6 +29,8 @@ import xs.rfid.modules.stock.domain.RfidGiftMst;
 **/
 public interface RfidGiftMstRepository extends JpaRepository<RfidGiftMst, Long>, JpaSpecificationExecutor<RfidGiftMst> {
 
-    public RfidGiftMst findByGiftModel(String giftModel);
+    public List<RfidGiftMst> findByGiftModel(String giftModel);
+
+    public List<RfidGiftMst> findByGiftCodAndIsBindNot(String giftCod, Integer isBind);
 
 }

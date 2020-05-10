@@ -30,6 +30,7 @@
             <if test="criteria.giftName != null and criteria.giftName != ' '">
                 and gift.gift_name = #{criteria.giftName}
             </if>
+            and gift.is_bind <![CDATA[ <> ]]> 1
         </where>
     </select>
 </mapper>

@@ -55,4 +55,6 @@ public class RfidGiftTrnDto implements Serializable {
     private String giftName;
 
     private String clientName;
+
+    private Long giftId;
 }

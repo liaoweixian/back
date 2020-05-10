@@ -84,6 +84,12 @@ public class RfidGiftMst implements Serializable {
     @ApiModelProperty(value = "图片地址")
     private String imgUrl;
 
+    /**
+     *  被下单 状态变更为1
+     */
+    @Column(name = "is_bind")
+    private Integer isBind;
+
     @Transient
     private Integer inventoryCnt;
 

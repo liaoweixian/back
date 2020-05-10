@@ -84,6 +84,12 @@ public class RfidGiftTrn implements Serializable {
     private String updateName;
 
     /**
+     * 礼品id
+     */
+    @Column(name = "gift_id")
+    private Long giftId;
+
+    /**
      * 礼品名字
      */
     @Transient

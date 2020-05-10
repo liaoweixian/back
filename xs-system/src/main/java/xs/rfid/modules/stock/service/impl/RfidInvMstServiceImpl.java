@@ -92,19 +92,6 @@ public class RfidInvMstServiceImpl implements RfidInvMstService {
         RfidInvMst rfidInvMst = rfidInvMstRepository.findById(resources.getId()).orElseGet(RfidInvMst::new);
         ValidationUtil.isNull( rfidInvMst.getId(),"RfidInvMst","id",resources.getId());
         rfidInvMst.copy(resources);
-
-        // 库存事务添加
-        RfidInvTrn rfidInvTrn = new RfidInvTrn();
-        rfidInvTrn.setGiftCod(rfidInvMst.getGiftCod());
-        rfidInvTrn.setLocationCod(rfidInvMst.getLocationCod());
-        rfidInvTrn.setTransCnt("1");
-        rfidInvTrn.setTransType("1"); // 入库
-        rfidInvTrn.setTransDat(DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
-        rfidInvTrn.setStatus("1"); // 未上架
-        rfidInvTrn.setIsDelete("0");
-        rfidInvTrnService.create(rfidInvTrn);
-
-
         rfidInvMstRepository.save(rfidInvMst);
     }
 

@@ -40,4 +40,6 @@ public class GiftMstDto implements Serializable {
 
     /** 是否删除 */
     private String isDelete;
+
+    private  Integer isBind;
 }
