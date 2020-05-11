@@ -33,4 +33,6 @@ public interface RfidGiftMstRepository extends JpaRepository<RfidGiftMst, Long>,
 
     public List<RfidGiftMst> findByGiftCodAndIsBindNot(String giftCod, Integer isBind);
 
+    public RfidGiftMst findByRfidCod(String rfidCod);
+
 }

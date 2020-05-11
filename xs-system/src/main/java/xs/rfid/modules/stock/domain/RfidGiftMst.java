@@ -84,6 +84,10 @@ public class RfidGiftMst implements Serializable {
     @ApiModelProperty(value = "图片地址")
     private String imgUrl;
 
+    @Transient
+    @ApiModelProperty(value = "第二个RFID编码")
+    private String rfidCodTwo;
+
     /**
      *  被下单 状态变更为1
      */

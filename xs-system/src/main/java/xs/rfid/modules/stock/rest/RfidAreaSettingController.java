@@ -89,34 +89,4 @@ public class RfidAreaSettingController {
         rfidAreaSettingService.deleteAll(ids);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    /**
-     *  区域读取客户信息，上传显示大屏接口
-     * @return
-     */
-    @Log("区域读取客户信息，上传显示大屏接口")
-    @GetMapping("/showMonitor")
-    @ApiOperation("区域读取客户信息，上传显示大屏接口")
-    public ResponseEntity<Object> showMonitor(RfidAreaSettingQueryCriteria criteria) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("code", "4000");
-        if (StrUtil.isEmpty(criteria.getIp())) {
-            map.put("msg", "请上传ip地址");
-            return new ResponseEntity<>(map, HttpStatus.OK);
-        }
-        if (StrUtil.isEmpty(criteria.getRfidCode())) {
-            map.put("msg", "请上传客户身份信息");
-            return new ResponseEntity<>(map, HttpStatus.OK);
-        }
-        RfidAreaSetting areaSetting = rfidAreaSettingRepository.findByIp(criteria.getIp());
-        RfidVdrMst member = rfidVdrMstRepository.findByRfidCod(criteria.getRfidCode());
-        Map<String, Object> memberMap = new HashMap<>();
-        memberMap.put("cmd", "member");
-        memberMap.put("data", member);
-        sendMessage.send(
-                JSON.toJSONString(memberMap),
-                TOPIC_PREFIX + String.valueOf(areaSetting.getUserId()));
-        map.put("code","2000");
-        return new ResponseEntity<>(map, HttpStatus.OK);
-    }
 }

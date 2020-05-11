@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 * @date 2020-05-08
 */
 public interface RfidGiftTrnRepository extends JpaRepository<RfidGiftTrn, Long>, JpaSpecificationExecutor<RfidGiftTrn> {
+
+    public RfidGiftTrn findByGiftId(Long giftId);
 }

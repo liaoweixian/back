@@ -88,8 +88,8 @@ public class RfidAreaSettingServiceImpl implements RfidAreaSettingService {
         ValidationUtil.isNull( rfidAreaSetting.getId(),"RfidAreaSetting","id",resources.getId());
         rfidAreaSetting.copy(resources);
         User user = userRepository.findById(rfidAreaSetting.getUserId()).get();
-        resources.setUserId(user.getId());
-        resources.setUserName(user.getUsername());
+        rfidAreaSetting.setUserId(user.getId());
+        rfidAreaSetting.setUserName(user.getUsername());
         rfidAreaSettingRepository.save(rfidAreaSetting);
     }
 

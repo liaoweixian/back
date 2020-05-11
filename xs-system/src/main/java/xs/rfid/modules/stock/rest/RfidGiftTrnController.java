@@ -40,7 +40,7 @@ public class RfidGiftTrnController {
     @GetMapping
     @Log("查询订单管理")
     @ApiOperation("查询订单管理")
-    @PreAuthorize("@el.check('rfidGiftTrn:list')")
+    // @PreAuthorize("@el.check('rfidGiftTrn:list')")
     public ResponseEntity<Object> getRfidGiftTrns(RfidGiftTrnQueryCriteria criteria, Pageable pageable){
         return new ResponseEntity<>(rfidGiftTrnService.queryAll(criteria,pageable),HttpStatus.OK);
     }
