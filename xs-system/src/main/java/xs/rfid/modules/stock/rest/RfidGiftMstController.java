@@ -24,9 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import org.springframework.web.multipart.MultipartFile;
-import xs.rfid.OssTemplate;
 import xs.rfid.aop.log.Log;
-import xs.rfid.model.RfidFile;
 import xs.rfid.modules.stock.domain.RfidGiftMst;
 import xs.rfid.modules.stock.service.RfidGiftMstService;
 import xs.rfid.modules.stock.service.dto.RfidGiftMstQueryCriteria;
@@ -51,11 +49,9 @@ public class RfidGiftMstController {
 
     private final RfidGiftMstService rfidGiftMstService;
 
-    private final OssTemplate ossTemplate;
 
-    public RfidGiftMstController(RfidGiftMstService rfidGiftMstService, OssTemplate ossTemplate) {
+    public RfidGiftMstController(RfidGiftMstService rfidGiftMstService) {
         this.rfidGiftMstService = rfidGiftMstService;
-        this.ossTemplate = ossTemplate;
     }
 
     @Log("导出数据")

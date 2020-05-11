@@ -17,7 +17,6 @@
 		<module>xs-monitor</module>
         <module>xs-generator</module>
         <module>xs-api</module>
-        <module>xs-oss</module>
     </modules>
 
     <name>先施RFID系统</name>
