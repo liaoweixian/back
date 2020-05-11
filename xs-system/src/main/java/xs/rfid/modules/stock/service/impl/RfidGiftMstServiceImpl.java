@@ -185,6 +185,13 @@ public class RfidGiftMstServiceImpl implements RfidGiftMstService {
     @Override
     public void deleteAll(Long[] ids) {
         for (Long id : ids) {
+            // 礼品删除需要扣除 库存数量
+            RfidGiftMst rfidGiftMst = rfidGiftMstRepository.findById(id).get();
+            RfidInvMst warehouse = rfidInvMstRepository.findByGiftCod(rfidGiftMst.getGiftCod());
+            int num = Integer.parseInt(warehouse.getInventoryCnt());
+            warehouse.setInventoryCnt(String.valueOf(--num));
+            rfidInvMstRepository.save(warehouse);
+
             rfidGiftMstRepository.deleteById(id);
         }
     }

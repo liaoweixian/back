@@ -17,7 +17,7 @@
     </resultMap>
 
     <select id="findAll" resultMap="baseMap" parameterType="xs.rfid.modules.stock.service.dto.RfidGiftMstQueryCriteria">
-        select gift.*, IFNULL(invm.inventory_cnt,0) as inventory_cnt
+        select gift.*, 1 as inventory_cnt
         from rfid_gift_mst as gift
         left join rfid_inv_mst as invm on gift.gift_cod = invm.gift_cod
         <where>
