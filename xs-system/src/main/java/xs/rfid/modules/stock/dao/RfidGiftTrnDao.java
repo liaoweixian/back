@@ -10,5 +10,5 @@ import xs.rfid.modules.stock.service.dto.RfidGiftTrnQueryCriteria;
 
 public interface RfidGiftTrnDao extends BaseMapper<RfidGiftTrn> {
 
-    IPage<RfidGiftMst> findPage(Page<RfidGiftTrn> page, @Param("criteria") RfidGiftTrnQueryCriteria criteria);
+    IPage<RfidGiftTrn> findPage(Page<RfidGiftTrn> page, @Param("criteria") RfidGiftTrnQueryCriteria criteria);
 }

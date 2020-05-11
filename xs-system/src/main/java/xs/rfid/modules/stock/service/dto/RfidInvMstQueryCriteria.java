@@ -16,6 +16,8 @@
 package xs.rfid.modules.stock.service.dto;
 
 import lombok.Data;
+import xs.rfid.annotation.Query;
+
 import java.util.List;
 
 
@@ -27,4 +29,7 @@ import java.util.List;
 **/
 @Data
 public class RfidInvMstQueryCriteria{
+
+    @Query
+    private String giftCod;
 }

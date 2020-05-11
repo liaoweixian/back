@@ -18,11 +18,13 @@ package xs.rfid.modules.stock.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Pageable;
+import xs.rfid.modules.mqtt.SendMessage;
 import xs.rfid.modules.stock.dao.RfidGiftMstDao;
 import xs.rfid.modules.stock.domain.RfidGiftMst;
 import xs.rfid.modules.stock.domain.RfidInvMst;
@@ -66,6 +68,7 @@ public class RfidGiftMstServiceImpl implements RfidGiftMstService {
     private final RfidInvMstRepository rfidInvMstRepository;
 
     private final RfidInvTrnService rfidInvTrnService;
+
 
     public RfidGiftMstServiceImpl(RfidGiftMstRepository rfidGiftMstRepository, RfidGiftMstMapper rfidGiftMstMapper, RfidInvMstService rfidInvMstService, RfidInvMstMapper rfidInvMstMapper, RfidGiftMstDao rfidGiftMstDao, RfidInvMstRepository rfidInvMstRepository, RfidInvTrnService rfidInvTrnService) {
         this.rfidGiftMstRepository = rfidGiftMstRepository;
@@ -150,6 +153,7 @@ public class RfidGiftMstServiceImpl implements RfidGiftMstService {
             stock.setLastChangeUserName(SecurityUtils.getUsername());
             // 0 有效
             stock.setIsDelete("0");
+            stock.setGiftName(rfidGiftMst.getGiftName());
         }
         // 有库存
         else

@@ -1,14 +1,15 @@
 package xs.rfid.modules.stock.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import xs.rfid.modules.mqtt.SendMessage;
 import xs.rfid.modules.stock.dao.RfidGiftTrnDao;
 import xs.rfid.modules.stock.domain.*;
 import xs.rfid.modules.stock.repository.RfidGiftMstRepository;
 import xs.rfid.modules.stock.repository.RfidGiftTrnRepository;
 import xs.rfid.modules.stock.repository.RfidInvMstRepository;
 import xs.rfid.modules.stock.repository.RfidVdrMstRepository;
-import xs.rfid.modules.stock.service.RfidGiftMstService;
 import xs.rfid.modules.stock.service.RfidGiftTrnService;
 import xs.rfid.modules.stock.service.RfidInvTrnService;
 import xs.rfid.modules.stock.service.dto.RfidGiftTrnDto;
@@ -52,7 +53,9 @@ public class RfidGiftTrnServiceImpl implements RfidGiftTrnService {
 
     private final RfidGiftMstRepository rfidGiftMstRepository;
 
-    public RfidGiftTrnServiceImpl(RfidGiftTrnRepository rfidGiftTrnRepository, RfidGiftTrnMapper rfidGiftTrnMapper, RfidInvMstRepository rfidInvMstRepository, RfidInvTrnService rfidInvTrnService, RfidGiftTrnDao rfidGiftTrnDao, RfidVdrMstRepository rfidVdrMstRepository, RfidGiftMstRepository rfidGiftMstRepository) {
+    private final SendMessage sendMessage;
+
+    public RfidGiftTrnServiceImpl(RfidGiftTrnRepository rfidGiftTrnRepository, RfidGiftTrnMapper rfidGiftTrnMapper, RfidInvMstRepository rfidInvMstRepository, RfidInvTrnService rfidInvTrnService, RfidGiftTrnDao rfidGiftTrnDao, RfidVdrMstRepository rfidVdrMstRepository, RfidGiftMstRepository rfidGiftMstRepository, SendMessage sendMessage) {
         this.rfidGiftTrnRepository = rfidGiftTrnRepository;
         this.rfidGiftTrnMapper = rfidGiftTrnMapper;
         this.rfidInvMstRepository = rfidInvMstRepository;
@@ -60,6 +63,7 @@ public class RfidGiftTrnServiceImpl implements RfidGiftTrnService {
         this.rfidGiftTrnDao = rfidGiftTrnDao;
         this.rfidVdrMstRepository = rfidVdrMstRepository;
         this.rfidGiftMstRepository = rfidGiftMstRepository;
+        this.sendMessage = sendMessage;
     }
 
     @Override
@@ -68,7 +72,7 @@ public class RfidGiftTrnServiceImpl implements RfidGiftTrnService {
         //Page<RfidGiftTrn> page = rfidGiftTrnRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
         com.baomidou.mybatisplus.extension.plugins.pagination.Page<RfidGiftTrn> page =
                 new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageable.getPageNumber(), pageable.getPageSize());
-        IPage<RfidGiftMst> iPage = rfidGiftTrnDao.findPage(page, criteria);
+        IPage<RfidGiftTrn> iPage = rfidGiftTrnDao.findPage(page, criteria);
         return PageUtil.toPage(iPage);
     }
 
@@ -132,7 +136,18 @@ public class RfidGiftTrnServiceImpl implements RfidGiftTrnService {
         rfidInvTrn.setIsDelete("0");
         RfidInvTrnDto rfidInvTrnDto = rfidInvTrnService.create(rfidInvTrn);
         resources.setTransCod(rfidInvTrnDto.getId().toString());
-        return rfidGiftTrnMapper.toDto(rfidGiftTrnRepository.save(resources));
+
+        RfidGiftTrn save = rfidGiftTrnRepository.save(resources);
+
+        // 消息发送
+        Map<String, Object> memberMap = new HashMap<>();
+        memberMap.put("cmd", "orderPrompt");
+        memberMap.put("data", save);
+        sendMessage.send(
+                JSON.toJSONString(memberMap),
+                "/order/prompt/");
+
+        return rfidGiftTrnMapper.toDto(save);
     }
 
     @Override

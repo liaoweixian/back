@@ -69,6 +69,10 @@ public class RfidInvMst implements Serializable {
     @ApiModelProperty(value = "是否删除")
     private String isDelete;
 
+    @Column(name = "gift_name")
+    @ApiModelProperty(value = "礼品名")
+    private String giftName;
+
     public void copy(RfidInvMst source){
         BeanUtil.copyProperties(source,this, CopyOptions.create().setIgnoreNullValue(true));
     }

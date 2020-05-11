@@ -50,4 +50,6 @@ public class RfidInvMstDto implements Serializable {
 
     /** 是否删除 */
     private String isDelete;
+
+    private String giftName;
 }
