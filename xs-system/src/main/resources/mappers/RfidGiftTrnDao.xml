@@ -20,15 +20,19 @@
         <result property="updateName" column="update_name"/>
         <result property="giftName" column="gift_name"/>
         <result property="imgUrl" column="img_url"/>
+        <result property="locationName" column="location_name"/>
     </resultMap>
 
     <select id="findPage" resultMap="baseMap" parameterType="xs.rfid.modules.stock.service.dto.RfidGiftTrnQueryCriteria">
         SELECT
-        giftTrn.*,
-        giftMst.gift_cod as gift_cod,
-        giftMst.img_url as img_url,
-        giftMst.gift_name as gift_name
-         FROM rfid_gift_trn as giftTrn left join rfid_gift_mst as giftMst on giftTrn.gift_id = giftMst.id
+            giftTrn.*,
+            giftMst.gift_cod as gift_cod,
+            giftMst.img_url as img_url,
+            giftMst.gift_name as gift_name,
+            loc.location_name as location_name
+         FROM rfid_gift_trn as giftTrn
+         left join rfid_gift_mst as giftMst on giftTrn.gift_id = giftMst.id
+         left join rfid_loc_mst as loc on giftTrn.to_Location_cod = loc.location_cod
         <where>
             <if test="criteria.clientName != null and criteria.clientName != ''">
                 and giftTrn.client_name = #{criteria.clientName}

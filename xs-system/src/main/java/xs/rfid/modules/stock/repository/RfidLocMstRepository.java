@@ -30,5 +30,7 @@ import java.util.List;
 **/
 public interface RfidLocMstRepository extends JpaRepository<RfidLocMst, Long>, JpaSpecificationExecutor<RfidLocMst> {
 
-    public List<RfidLocMst> findByLocationCod(String locationCod);
+    public RfidLocMst findByLocationCod(String locationCod);
+
+    public List<RfidLocMst> findByLocationCodNotIn(List<String> locationCode);
 }

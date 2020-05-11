@@ -6,21 +6,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import xs.rfid.aop.log.Log;
 import xs.rfid.modules.mqtt.SendMessage;
-import xs.rfid.modules.stock.domain.RfidAreaSetting;
-import xs.rfid.modules.stock.domain.RfidGiftMst;
-import xs.rfid.modules.stock.domain.RfidGiftTrn;
-import xs.rfid.modules.stock.domain.RfidVdrMst;
-import xs.rfid.modules.stock.repository.RfidAreaSettingRepository;
-import xs.rfid.modules.stock.repository.RfidGiftMstRepository;
-import xs.rfid.modules.stock.repository.RfidGiftTrnRepository;
-import xs.rfid.modules.stock.repository.RfidVdrMstRepository;
+import xs.rfid.modules.stock.domain.*;
+import xs.rfid.modules.stock.repository.*;
 import xs.rfid.modules.stock.service.dto.RfidAreaSettingQueryCriteria;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "对外Api")
@@ -40,12 +34,15 @@ public class ExtApiController {
 
     private static final String TOPIC_PREFIX = "/member/info/";
 
-    public ExtApiController(RfidGiftTrnRepository rfidGiftTrnRepository, RfidGiftMstRepository rfidGiftMstRepository, RfidVdrMstRepository rfidVdrMstRepository, RfidAreaSettingRepository rfidAreaSettingRepository, SendMessage sendMessage) {
+    private final RfidLocMstRepository rfidLocMstRepository;
+
+    public ExtApiController(RfidGiftTrnRepository rfidGiftTrnRepository, RfidGiftMstRepository rfidGiftMstRepository, RfidVdrMstRepository rfidVdrMstRepository, RfidAreaSettingRepository rfidAreaSettingRepository, SendMessage sendMessage, RfidLocMstRepository rfidLocMstRepository) {
         this.rfidGiftTrnRepository = rfidGiftTrnRepository;
         this.rfidGiftMstRepository = rfidGiftMstRepository;
         this.rfidVdrMstRepository = rfidVdrMstRepository;
         this.rfidAreaSettingRepository = rfidAreaSettingRepository;
         this.sendMessage = sendMessage;
+        this.rfidLocMstRepository = rfidLocMstRepository;
     }
 
     /**

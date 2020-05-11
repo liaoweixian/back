@@ -24,11 +24,18 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
 import xs.rfid.aop.log.Log;
+import xs.rfid.modules.stock.domain.RfidGiftTrn;
 import xs.rfid.modules.stock.domain.RfidLocMst;
+import xs.rfid.modules.stock.repository.RfidGiftTrnRepository;
+import xs.rfid.modules.stock.repository.RfidInvMstRepository;
+import xs.rfid.modules.stock.repository.RfidLocMstRepository;
 import xs.rfid.modules.stock.service.RfidLocMstService;
 import xs.rfid.modules.stock.service.dto.RfidLocMstQueryCriteria;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -44,8 +51,14 @@ public class RfidLocMstController {
 
     private final RfidLocMstService rfidLocMstService;
 
-    public RfidLocMstController(RfidLocMstService rfidLocMstService) {
+    private final RfidLocMstRepository rfidLocMstRepository;
+
+    private final RfidGiftTrnRepository rfidGiftTrnRepository;
+
+    public RfidLocMstController(RfidLocMstService rfidLocMstService, RfidLocMstRepository rfidLocMstRepository, RfidGiftTrnRepository rfidGiftTrnRepository) {
         this.rfidLocMstService = rfidLocMstService;
+        this.rfidLocMstRepository = rfidLocMstRepository;
+        this.rfidGiftTrnRepository = rfidGiftTrnRepository;
     }
 
     @Log("导出数据")
@@ -64,12 +77,19 @@ public class RfidLocMstController {
         return new ResponseEntity<>(rfidLocMstService.queryAll(criteria,pageable),HttpStatus.OK);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/isNotBind")
     @Log("查询库位")
     @ApiOperation("查询库位")
     // @PreAuthorize("@el.check('rfidLocMst:list')")
-    public ResponseEntity<Object> getRfidLocMstAll(RfidLocMstQueryCriteria criteria){
-        return new ResponseEntity<>(rfidLocMstService.queryAll(criteria),HttpStatus.OK);
+    public ResponseEntity<Object> getRfidLocMstNotBindAll(RfidLocMstQueryCriteria criteria){
+        String[] status = {"1", "2", "3", "4", "5"};
+        List<RfidGiftTrn> order = rfidGiftTrnRepository.findByStatusIn(Arrays.asList(status));
+        ArrayList<String> list = new ArrayList<>();
+        order.stream().forEach(o -> {
+            list.add(o.getToLocationCod());
+        });
+        List<RfidLocMst> area = rfidLocMstRepository.findByLocationCodNotIn(list);
+        return new ResponseEntity<>(area,HttpStatus.OK);
     }
 
     @PostMapping

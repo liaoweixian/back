@@ -98,6 +98,9 @@ public class RfidGiftTrn implements Serializable {
     @Transient
     private String imgUrl;
 
+    @Transient
+    private String locationName;
+
 
 
     public void copy(RfidGiftTrn source){
